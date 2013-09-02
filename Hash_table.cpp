@@ -49,76 +49,66 @@ const double eps=1e-6;
 
 
 class hash_table{
-	static const int mod = 1000003;
-	int max_str_len;
-	int table[mod];
-	vector <ll> val;
-	vector <int> next;
-	
-private:	
-	void set_max_str_len(int _max_str_len){
-		max_str_len = _max_str_len;
-	}
+    static const int mod = 1000003;
+    int max_str_len;
+    int table[mod];
+    vector <ll> val;
+    vector <int> next;
 
-	ll get_hash(char* str){
-		ll hash = 0;	
-		for(int i = 0; i < max_str_len; ++i){
-			if(str[i] == '\0') break;
-			hash = hash*37 + str[i];
-		}
-		return hash;
-	}
+private:
+    void set_max_str_len(int _max_str_len){
+        max_str_len = _max_str_len;
+    }
+
+    ll get_hash(char* str){
+        ll hash = 0;
+        for(int i = 0; i < max_str_len; ++i){
+            if(str[i] == '\0') break;
+            hash = hash*37 + str[i];
+        }
+        return hash;
+    }
 public:
-	hash_table(){
-		set_max_str_len(15);
-		for(int i = 0; i < mod; ++i){
-			table[i] = -1;
-		}
-	}
+    hash_table(){
+        set_max_str_len(15);
+        for(int i = 0; i < mod; ++i){
+            table[i] = -1;
+        }
+    }
 
-	bool find(char* s){
-		bool f = false;
-		ll hash = get_hash(s);
-		int ind = table[hash % mod];
-		if(ind != -1){
-			while(!val.empty() && ind != -1){
-				if(val[ind] == hash){
-					f = true;
-					break;
-				}
-				ind = next[ind];
-			}
-		}
-		return f;
-	}	
-	void add(char* s){
-		bool f = false;
-		ll hash = get_hash(s);
-		int ind = table[hash % mod];
-
-		if(table[hash % mod] == -1){
-			table[hash % mod] = val.size();
-			val.push_back(hash);
-			next.push_back(-1);
-		}
-		else{
-			bool f = false;
-            ll hash = get_hash(s);
-    	    int ind = table[hash % mod];
-		    while(next[ind] != -1){
-			    if(val[ind] == hash){
-				    f = true;
-				    break;
-			    }
-			    ind = next[ind];
-		    }
-			if(!f){					
-				val.push_back(hash);
-				next[ind] = next.size();
-				next.push_back(-1);
-			}
-		}
-	}
+    bool find(char* s){
+        bool f = false;
+        ll hash = get_hash(s);
+        int ind = table[hash % mod];
+        if(ind != -1){
+            while(!val.empty() && ind != -1){
+                if(val[ind] == hash){
+                    f = true;
+                    break;
+                }
+                ind = next[ind];
+            }
+        }
+        return f;
+    }
+    void add(char* s){
+        ll hash = get_hash(s);
+        int ind = table[hash % mod];
+        bool f = false;
+        while(ind != -1){
+            if(val[ind] == hash){
+                f = true;
+                break;
+            }
+            ind = next[ind];
+        }
+        if(!f){
+            ind = hash % mod;
+            val.push_back(hash);
+            next.push_back(table[ind]);
+            table[ind] = val.size() - 1;
+        }
+    }
 };
 
 
